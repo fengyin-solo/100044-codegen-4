@@ -19,6 +19,7 @@ const Alarm = () => import('@/views/alarm/index.vue')
 const Maint = () => import('@/views/maint/index.vue')
 const Permit = () => import('@/views/permit/index.vue')
 const Audit = () => import('@/views/audit/index.vue')
+const Training = () => import('@/views/training/index.vue')
 
 const router = createRouter({
   history: createWebHistory(),
@@ -40,6 +41,7 @@ const router = createRouter({
     { path: '/energy', name: 'energy', component: Energy },
     { path: '/alarm', name: 'alarm', component: Alarm },
     { path: '/maint', name: 'maint', component: Maint },
+    { path: '/training', name: 'training', component: Training },
     { path: '/permit', name: 'permit', component: Permit },
     { path: '/audit', name: 'audit', component: Audit },
   ],

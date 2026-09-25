@@ -1,7 +1,71 @@
 """示例数据：每个模块给几条不同状态的记录，方便起服务后立刻看到内容。"""
 from __future__ import annotations
 
+from datetime import date, timedelta
 from typing import Any
+
+
+def _training_seed() -> tuple[list[dict[str, Any]], list[dict[str, Any]]]:
+    """构造培训与持证上岗的示例数据。
+
+    证书到期日按当天日期前后浮动，保证「持证有效/即将到期/今日到期/已超期/缺失」
+    各口径在任意一天启动都有对应示例，资格状态由 service 现算，这里只落档案事实。
+    """
+    today = date.today()
+
+    def d(offset: int) -> str:
+        return (today + timedelta(days=offset)).isoformat()
+
+    rules = [
+        {"id": 1, "status": "启用", "pending": False, "abnormal": False,
+         "岗位名称": "中控运行工", "岗位类别": "运行", "必备证书": "污水处理工证",
+         "培训周期月": 12, "提前提醒天数": 30, "启用状态": "启用", "备注": "每年度复审"},
+        {"id": 2, "status": "启用", "pending": False, "abnormal": False,
+         "岗位名称": "化验检测员", "岗位类别": "化验", "必备证书": "化验员资格证",
+         "培训周期月": 24, "提前提醒天数": 45, "启用状态": "启用", "备注": ""},
+        {"id": 3, "status": "启用", "pending": False, "abnormal": False,
+         "岗位名称": "加药操作工", "岗位类别": "运行", "必备证书": "危险化学品操作证",
+         "培训周期月": 12, "提前提醒天数": 30, "启用状态": "启用", "备注": ""},
+        {"id": 4, "status": "启用", "pending": False, "abnormal": False,
+         "岗位名称": "污泥脱水工", "岗位类别": "运行", "必备证书": "污泥脱水操作证",
+         "培训周期月": 18, "提前提醒天数": 20, "启用状态": "启用", "备注": ""},
+        {"id": 5, "status": "启用", "pending": False, "abnormal": False,
+         "岗位名称": "维修电工", "岗位类别": "设备", "必备证书": "低压电工证",
+         "培训周期月": 36, "提前提醒天数": 60, "启用状态": "启用", "备注": ""},
+        {"id": 6, "status": "启用", "pending": False, "abnormal": False,
+         "岗位名称": "受限空间监护人", "岗位类别": "安全", "必备证书": "受限空间作业监护证",
+         "培训周期月": 24, "提前提醒天数": 30, "启用状态": "启用",
+         "备注": "仅用于监护人资格提示，不改变作业许可里监护人的填写方式"},
+    ]
+
+    raw_staff = [
+        # 工号, 姓名, 岗位, 部门, 证书, 机构, 发证日偏移, 到期日偏移
+        ("TR0001", "王建国", "中控运行工", "运行一值", "污水处理工证", "市人社局", -300, 200),
+        ("TR0002", "李淑芬", "中控运行工", "运行二值", "污水处理工证", "市人社局", -350, 20),
+        ("TR0003", "张伟", "化验检测员", "化验室", "化验员资格证", "省生态环境厅", -600, 0),
+        ("TR0004", "刘洋", "加药操作工", "运行一值", "危险化学品操作证", "应急管理局", -400, -15),
+        ("TR0005", "陈敏", "污泥脱水工", "污泥班组", "污泥脱水操作证", "市城管局", -200, 90),
+        ("TR0006", "赵强", "维修电工", "设备部", "", "", None, None),
+        ("TR0007", "孙丽", "化验检测员", "化验室", "污水处理工证", "市人社局", -300, 300),
+        ("TR0008", "周勇", "中控运行工", "运行三值", "污水处理工证", "市人社局", -330, 70),
+        ("TR0009", "吴海涛", "仓库管理员", "后勤", "", "", None, None),
+        ("TR0010", "郑海峰", "受限空间监护人", "安全部", "受限空间作业监护证", "应急管理局", -700, 10),
+    ]
+
+    staff: list[dict[str, Any]] = []
+    for index, (code, name, position, dept, cert, org, issue_off, expiry_off) in enumerate(raw_staff, start=1):
+        staff.append({
+            "id": index,
+            "工号": code, "姓名": name, "岗位名称": position, "所属部门": dept,
+            "证书名称": cert, "发证机构": org,
+            "发证日期": d(issue_off) if issue_off is not None else "",
+            "到期日期": d(expiry_off) if expiry_off is not None else "",
+            "备注": "", "status": "", "pending": False, "abnormal": False,
+        })
+    return rules, staff
+
+
+_TRAINING_RULES, _TRAINING_STAFF = _training_seed()
 
 SEED_ROWS: dict[str, list[dict[str, Any]]] = {
     "plant": [{'id': 1,
@@ -651,5 +715,7 @@ SEED_ROWS: dict[str, list[dict[str, Any]]] = {
   '整改项数': '达标审核样例3',
   '审核结论': '达标审核样例3',
   '审核人员': '达标审核样例3',
-  '审核状态': '达标审核样例3'}]
+  '审核状态': '达标审核样例3'}],
+    "position_rule": _TRAINING_RULES,
+    "staff": _TRAINING_STAFF
 }

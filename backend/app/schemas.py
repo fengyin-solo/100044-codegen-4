@@ -244,3 +244,9 @@ class AuditEntry(BaseModel):
     field_5: str | None = None  # 审核结论
     field_6: str | None = None  # 审核人员
     field_7: str | None = None  # 审核状态
+
+
+class TrainingImportPayload(BaseModel):
+    """员工持证档案批量导入入参：一次提交多名员工。"""
+
+    rows: list[dict[str, Any]] = Field(default_factory=list)

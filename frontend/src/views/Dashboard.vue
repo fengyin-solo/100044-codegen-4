@@ -18,7 +18,7 @@
       </thead>
       <tbody>
         <tr v-for="row in moduleRows" :key="row.name">
-          <td>{{ row.name }}</td>
+          <td>{{ moduleLabels[row.name] ?? row.name }}</td>
           <td>{{ row.created }}</td>
           <td>{{ row.pending }}</td>
           <td>{{ row.abnormal }}</td>
@@ -40,6 +40,30 @@ type Overview = {
 
 const cards = ref<Overview['cards']>([])
 const moduleRows = ref<Overview['modules']>([])
+
+// 概览接口返回的是后端表名，这里统一翻成中文模块名；新增培训模块的两张表也收进来。
+const moduleLabels: Record<string, string> = {
+  plant: '厂区单元',
+  inflow: '进水监测',
+  effluent: '出水监测',
+  aeration: '曝气控制',
+  dosing: '加药管理',
+  sludge: '污泥处置',
+  dewater: '脱水运行',
+  pump: '泵站运行',
+  blower: '鼓风机组',
+  membrane: '膜组件',
+  online: '在线仪表',
+  sample: '取样检测',
+  chemical: '药剂出入',
+  energy: '能耗管理',
+  alarm: '报警中心',
+  maint: '设备检修',
+  permit: '受限空间作业',
+  audit: '达标审核',
+  position_rule: '岗位培训计划',
+  staff: '员工持证档案',
+}
 
 onMounted(async () => {
   try {
