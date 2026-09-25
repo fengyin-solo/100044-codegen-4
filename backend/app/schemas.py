@@ -28,6 +28,12 @@ class EntryPayload(BaseModel):
     remark: str | None = None
 
 
+class ImportPayload(BaseModel):
+    """批量导入员工时提交的文本行集合，每行一名员工。"""
+
+    rows: list[str] = Field(default_factory=list)
+
+
 
 class PlantEntry(BaseModel):
     """工艺单元明细结构。"""
@@ -244,3 +250,15 @@ class AuditEntry(BaseModel):
     field_5: str | None = None  # 审核结论
     field_6: str | None = None  # 审核人员
     field_7: str | None = None  # 审核状态
+
+class TrainingEntry(BaseModel):
+    """员工培训档案明细结构。"""
+
+    field_0: str | None = None  # 员工编号
+    field_1: str | None = None  # 姓名
+    field_2: str | None = None  # 岗位
+    field_3: str | None = None  # 必备证书
+    field_4: str | None = None  # 最近到期日
+    field_5: str | None = None  # 资格状态
+    field_6: str | None = None  # 上岗资格
+    field_7: str | None = None  # 培训计划

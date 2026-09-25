@@ -1,9 +1,58 @@
 """示例数据：每个模块给几条不同状态的记录，方便起服务后立刻看到内容。"""
 from __future__ import annotations
 
+from datetime import date, timedelta
 from typing import Any
 
+
+def _training_rows() -> list[dict[str, Any]]:
+    """员工培训档案：证书有效期按启动当天偏移，保证四种资格口径都有样例。"""
+
+    def offset(days: int) -> str:
+        return (date.today() + timedelta(days=days)).isoformat()
+
+    return [
+        {"id": 1,
+         "status": "持证有效",
+         "pending": False,
+         "abnormal": False,
+         "员工编号": "EMP-0001",
+         "姓名": "张海",
+         "岗位": "运行工",
+         "证书列表": [{"证书名称": "污水处理工证", "证书编号": "WST-2024-0001", "有效期至": offset(200)}],
+         "培训计划": [{"计划名称": "安全操作规程", "计划日期": offset(30), "计划状态": "待完成"}]},
+        {"id": 2,
+         "status": "临期提醒",
+         "pending": True,
+         "abnormal": False,
+         "员工编号": "EMP-0002",
+         "姓名": "李梅",
+         "岗位": "化验员",
+         "证书列表": [{"证书名称": "化验员上岗证", "证书编号": "LAB-2023-0102", "有效期至": offset(10)}],
+         "培训计划": [{"计划名称": "化验安全培训", "计划日期": offset(-5), "计划状态": "已完成"}]},
+        {"id": 3,
+         "status": "今日到期",
+         "pending": True,
+         "abnormal": False,
+         "员工编号": "EMP-0003",
+         "姓名": "王强",
+         "岗位": "受限空间监护人",
+         "证书列表": [{"证书名称": "受限空间监护证", "证书编号": "CSE-2023-0330", "有效期至": offset(0)}],
+         "培训计划": [{"计划名称": "受限空间应急演练", "计划日期": offset(20), "计划状态": "待完成"}]},
+        {"id": 4,
+         "status": "已超期",
+         "pending": False,
+         "abnormal": True,
+         "员工编号": "EMP-0004",
+         "姓名": "赵敏",
+         "岗位": "电工",
+         "证书列表": [{"证书名称": "低压电工证", "证书编号": "ELE-2022-0871", "有效期至": offset(-5)}],
+         "培训计划": []},
+    ]
+
+
 SEED_ROWS: dict[str, list[dict[str, Any]]] = {
+    "training": _training_rows(),
     "plant": [{'id': 1,
   'status': '待调试',
   'pending': True,
